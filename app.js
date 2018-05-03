@@ -1,6 +1,6 @@
 const express = require('express')
 const querystring = require('querystring');
-const port = process.emv.port|| 3000;
+const port = process.emv.port || 3000;
 const app = express()
 const mongoose = require('mongoose');
 
@@ -10,9 +10,7 @@ const dbName = "klack";
 const URI = "ds113640.mlab.com:13640"
 
 //mongo stuff
-mongoose.connect(`mongodb://${dbUser}:${dbPassword}@${URI}/${dbName}`, () => {
-    console.log('connection success')
-})
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection fuckup'))
 
@@ -50,28 +48,31 @@ function userSortFn(a, b) {
     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
     if (nameA < nameB) {
-      return -1;
+        return -1;
     }
     if (nameA > nameB) {
-      return 1;
+        return 1;
     }
-  
+
     // names must be equal
-    return 0;      
+    return 0;
 }
 
 app.get("/messages", (request, response) => {
-    
-    
+
+
 
     // get the current time
     const now = Date.now();
 
     // consider users active if they have connected (GET or POST) in last 15 seconds
-    const requireActiveSince = now - (15*1000)
+    const requireActiveSince = now - (15 * 1000)
 
     // create a new list of users with a flag indicating whether they have been active recently
-    usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
+    usersSimple = Object.keys(usersTimestamps).map((x) => ({
+        name: x,
+        active: (usersTimestamps[x] > requireActiveSince)
+    }))
 
     // sort the list of users alphabetically by name
     usersSimple.sort(userSortFn);
@@ -83,9 +84,12 @@ app.get("/messages", (request, response) => {
 
     // send the latest 40 messages and the full user list, annotated with active flags
     Message.find((err, messages) => {
-        response.send({messages: messages.slice(-40), users: usersSimple})
-        
-    }) 
+        response.send({
+            messages: messages.slice(-40),
+            users: usersSimple
+        })
+
+    })
 })
 
 app.post("/messages", (req, res) => {
@@ -97,12 +101,12 @@ app.post("/messages", (req, res) => {
         timestamp: timestamp,
 
     })
-    
+
     message.save()
-    
+
 
     // append the new message to the message list
-    
+
 
     // update the posting user's last access timestamp (so we know they are active)
     // let lastMsgTimeStamp = 
@@ -113,4 +117,8 @@ app.post("/messages", (req, res) => {
     res.send(req.body)
 })
 
-app.listen(port)
+app.listen(PORT, () => {
+    mongoose.connect(`mongodb://${dbUser}:${dbPassword}@${URI}/${dbName}`, () => {
+        console.log('connection success')
+    })
+})
