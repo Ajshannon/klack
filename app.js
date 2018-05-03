@@ -1,11 +1,16 @@
 const express = require('express')
 const querystring = require('querystring');
-const port = 3000
+const port = process.emb.port|| 3000;
 const app = express()
 const mongoose = require('mongoose');
 
+const dbPassword = "admin";
+const dbUser = "admin";
+const dbName = "klack";
+const URI = "ds113640.mlab.com:13640"
+
 //mongo stuff
-mongoose.connect('mongodb://localhost/klack', () => {
+mongoose.connect(`mongodb://${dbUser}:${dbPassword}@${URI}/${dbName}`, () => {
     console.log('connection success')
 })
 const db = mongoose.connection;
@@ -108,4 +113,4 @@ app.post("/messages", (req, res) => {
     res.send(req.body)
 })
 
-app.listen(3000)
+app.listen(port)
