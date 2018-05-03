@@ -1,13 +1,13 @@
 const express = require('express')
 const querystring = require('querystring');
-const port = process.emv.port || 3000;
+const PORT = process.emv.PORT || 3000;
 const app = express()
 const mongoose = require('mongoose');
 
 const dbPassword = "admin";
 const dbUser = "admin";
 const dbName = "klack";
-const URI = "ds113640.mlab.com:13640"
+const URI = "ds113640.mlab.com:13640";
 
 //mongo stuff
 
